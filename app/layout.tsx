@@ -1,11 +1,17 @@
 import type { Metadata } from "next"
-import { Cormorant_Garamond, DM_Sans, IBM_Plex_Mono } from "next/font/google"
+import { Bebas_Neue, DM_Sans, IBM_Plex_Mono, Instrument_Serif } from "next/font/google"
 import "./globals.css"
 
-const cormorant = Cormorant_Garamond({
+const bebasNeue = Bebas_Neue({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: "400",
+})
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
   style: ["normal", "italic"],
 })
 
@@ -23,7 +29,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "Brought Receipts",
-  description: "A private work log that helps you never forget your impact.",
+  description: "A proof ledger for professionals who are done showing up to reviews empty-handed.",
 }
 
 export default function RootLayout({
@@ -34,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${dmSans.variable} ${ibmPlexMono.variable} h-full`}
+      className={`${bebasNeue.variable} ${instrumentSerif.variable} ${dmSans.variable} ${ibmPlexMono.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

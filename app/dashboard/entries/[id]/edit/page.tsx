@@ -19,15 +19,15 @@ export default async function EditEntryPage({
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
         style={{ fontFamily: 'var(--font-mono)' }}
       >
-        ← Back to entry
+        ← back to receipt
       </Link>
 
       <div className="mb-8">
         <h1
-          className="text-4xl text-foreground"
-          style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+          className="text-foreground"
+          style={{ fontFamily: 'var(--font-display)', fontSize: '42px', letterSpacing: '2px', lineHeight: 1 }}
         >
-          Edit Win
+          EDIT RECEIPT
         </h1>
       </div>
 

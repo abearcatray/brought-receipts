@@ -6,8 +6,8 @@ import type { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 
 const NAV = [
-  { href: '/dashboard', label: 'Wins', icon: StarIcon },
-  { href: '/dashboard/export', label: 'Export', icon: ExportIcon },
+  { href: '/dashboard', label: 'Receipts', icon: StarIcon },
+  { href: '/dashboard/export', label: 'Review Packet', icon: ExportIcon },
 ]
 
 export default function DashboardNav({ user }: { user: User }) {
@@ -24,36 +24,30 @@ export default function DashboardNav({ user }: { user: User }) {
     <>
       {/* Sidebar — desktop */}
       <nav
-        className="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 border-r border-border p-6 z-20"
+        className="hidden md:flex flex-col fixed left-0 top-0 h-full w-60 border-r border-sidebar-border p-6 z-20"
         style={{ background: 'var(--sidebar)', fontFamily: 'var(--font-body)' }}
       >
         {/* Wordmark */}
         <Link href="/dashboard" className="block mb-8">
           <span
-            className="text-2xl leading-none"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 600, color: 'var(--foreground)' }}
+            className="leading-none"
+            style={{ fontFamily: 'var(--font-display)', fontSize: '28px', letterSpacing: '3px', color: 'var(--sidebar-foreground)' }}
           >
-            brought<br />receipts
+            BROUGHT<br />RECEIPTS
           </span>
         </Link>
 
-        {/* New entry CTA */}
+        {/* Capture CTA */}
         <Link
           href="/dashboard/entries/new"
-          className="flex items-center justify-center gap-2 w-full rounded-md px-4 py-2.5 text-sm font-medium mb-6 transition-all duration-150"
+          className="flex items-center justify-center gap-2 w-full rounded-md px-4 py-2.5 text-sm font-medium mb-6 transition-opacity hover:opacity-90"
           style={{
             background: 'var(--gold)',
-            color: 'oklch(0.12 0.005 60)',
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.opacity = '0.9'
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLElement).style.opacity = '1'
+            color: '#0E0E0D',
           }}
         >
           <span className="text-base leading-none">+</span>
-          Log a win
+          Capture
         </Link>
 
         {/* Nav links */}
@@ -66,8 +60,9 @@ export default function DashboardNav({ user }: { user: User }) {
                 href={href}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors duration-150"
                 style={{
-                  color: active ? 'var(--gold)' : 'var(--muted-foreground)',
-                  background: active ? 'var(--gold-dim)' : 'transparent',
+                  color: active ? 'var(--gold)' : 'var(--sidebar-foreground)',
+                  background: active ? 'var(--sidebar-accent)' : 'transparent',
+                  opacity: active ? 1 : 0.7,
                 }}
               >
                 <Icon size={16} />
@@ -81,19 +76,20 @@ export default function DashboardNav({ user }: { user: User }) {
         <div className="flex-1" />
 
         {/* User */}
-        <div className="border-t border-border pt-4">
+        <div className="border-t border-sidebar-border pt-4">
           <div className="flex items-center gap-3 px-3 py-2 mb-2">
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0"
-              style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}
+              style={{ background: 'var(--sidebar-accent)', color: 'var(--gold)' }}
             >
               {user.email?.[0]?.toUpperCase() ?? '?'}
             </div>
-            <span className="text-xs text-muted-foreground truncate">{user.email}</span>
+            <span className="text-xs truncate" style={{ color: 'var(--sidebar-foreground)', opacity: 0.6 }}>{user.email}</span>
           </div>
           <button
             onClick={signOut}
-            className="w-full text-left px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+            className="w-full text-left px-3 py-2 text-xs transition-opacity rounded-md hover:opacity-100"
+            style={{ color: 'var(--sidebar-foreground)', opacity: 0.5 }}
           >
             Sign out
           </button>
@@ -102,15 +98,14 @@ export default function DashboardNav({ user }: { user: User }) {
 
       {/* Mobile header */}
       <header
-        className="md:hidden fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 border-b border-border"
+        className="md:hidden fixed top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-3 border-b border-sidebar-border"
         style={{ background: 'var(--sidebar)' }}
       >
         <Link href="/dashboard">
           <span
-            className="text-xl"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
+            style={{ fontFamily: 'var(--font-display)', fontSize: '20px', letterSpacing: '2px', color: 'var(--sidebar-foreground)' }}
           >
-            brought receipts
+            BROUGHT RECEIPTS
           </span>
         </Link>
         <div className="flex items-center gap-2">
@@ -120,19 +115,20 @@ export default function DashboardNav({ user }: { user: User }) {
               href={href}
               className="text-xs px-3 py-1.5 rounded-md transition-colors"
               style={{
-                color: pathname === href ? 'var(--gold)' : 'var(--muted-foreground)',
-                background: pathname === href ? 'var(--gold-dim)' : 'transparent',
+                color: pathname === href ? 'var(--gold)' : 'var(--sidebar-foreground)',
+                background: pathname === href ? 'var(--sidebar-accent)' : 'transparent',
+                opacity: pathname === href ? 1 : 0.7,
               }}
             >
-              {label}
+              {label === 'Review Packet' ? 'Export' : label}
             </Link>
           ))}
           <Link
             href="/dashboard/entries/new"
-            className="text-xs px-3 py-1.5 rounded-md font-medium"
-            style={{ background: 'var(--gold)', color: 'oklch(0.12 0.005 60)' }}
+            className="text-xs px-3 py-1.5 rounded-md font-medium transition-opacity hover:opacity-90"
+            style={{ background: 'var(--gold)', color: '#0E0E0D' }}
           >
-            + Log
+            + Capture
           </Link>
         </div>
       </header>

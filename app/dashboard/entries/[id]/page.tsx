@@ -39,7 +39,7 @@ export default async function EntryDetailPage({
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
         style={{ fontFamily: 'var(--font-mono)' }}
       >
-        ← Back to wins
+        ← receipts
       </Link>
 
       {/* Header */}
@@ -47,7 +47,7 @@ export default async function EntryDetailPage({
         <div className="flex-1 min-w-0">
           <h1
             className="text-3xl sm:text-4xl leading-tight text-foreground"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+            style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
           >
             {entry.title}
           </h1>
@@ -109,7 +109,7 @@ export default async function EntryDetailPage({
 
         {entry.links?.length ? (
           <section>
-            <p className={labelClass} style={{ fontFamily: 'var(--font-mono)' }}>Evidence links</p>
+            <p className={labelClass} style={{ fontFamily: 'var(--font-mono)' }}>Proof links</p>
             <ul className="space-y-2">
               {entry.links.map(link => (
                 <li key={link.id}>
@@ -117,7 +117,7 @@ export default async function EntryDetailPage({
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm hover:text-primary transition-colors group"
+                    className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity group"
                     style={{ color: 'var(--gold)' }}
                   >
                     <span className="text-muted-foreground group-hover:text-primary">↗</span>
@@ -162,8 +162,8 @@ export default async function EntryDetailPage({
         className="mt-12 pt-6 border-t border-border text-xs text-muted-foreground"
         style={{ fontFamily: 'var(--font-mono)' }}
       >
-        Logged {format(new Date(entry.created_at), 'MMM d, yyyy')}
-        {entry.updated_at !== entry.created_at && ` · Updated ${format(new Date(entry.updated_at), 'MMM d, yyyy')}`}
+        logged {format(new Date(entry.created_at), 'MMM d, yyyy')}
+        {entry.updated_at !== entry.created_at && ` · last updated ${format(new Date(entry.updated_at), 'MMM d, yyyy')}`}
       </div>
     </div>
   )

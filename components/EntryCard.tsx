@@ -16,7 +16,7 @@ export default function EntryCard({
 
   async function handleDelete(e: React.MouseEvent) {
     e.preventDefault()
-    if (!confirm('Delete this win?')) return
+    if (!confirm("Delete this receipt? This can't be undone.")) return
     setDeleting(true)
     onDelete?.(entry.id)
   }
@@ -38,7 +38,7 @@ export default function EntryCard({
           opacity: deleting ? 0.5 : 1,
         }}
       >
-        {/* Gold left accent on hover */}
+        {/* Amber left accent on hover */}
         <div
           className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full transition-all duration-200 opacity-0 group-hover:opacity-100"
           style={{ background: 'var(--gold)' }}
@@ -49,7 +49,7 @@ export default function EntryCard({
             {/* Title */}
             <h3
               className="text-lg leading-snug text-foreground group-hover:text-primary transition-colors duration-150 truncate"
-              style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+              style={{ fontFamily: 'var(--font-body)', fontWeight: 500 }}
             >
               {entry.title}
             </h3>
@@ -120,7 +120,7 @@ export default function EntryCard({
           </div>
         </div>
 
-        {/* Evidence links indicator */}
+        {/* Evidence indicators */}
         {(entry.links?.length || entry.files?.length) ? (
           <div className="mt-3 flex items-center gap-2">
             {entry.links?.length ? (

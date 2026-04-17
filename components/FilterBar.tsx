@@ -52,7 +52,7 @@ export default function FilterBar({
       <div className="flex flex-wrap gap-2">
         <input
           type="search"
-          placeholder="Search wins…"
+          placeholder="search by title, tag, or project…"
           value={search}
           onChange={e => update('search', e.target.value)}
           className="flex-1 min-w-48 rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
@@ -76,7 +76,7 @@ export default function FilterBar({
           value={dateFrom}
           onChange={e => update('dateFrom', e.target.value)}
           className="rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
-          style={{ fontFamily: 'var(--font-mono)', colorScheme: 'dark' }}
+          style={{ fontFamily: 'var(--font-mono)', colorScheme: 'light' }}
           title="From date"
         />
 
@@ -85,7 +85,7 @@ export default function FilterBar({
           value={dateTo}
           onChange={e => update('dateTo', e.target.value)}
           className="rounded-md border border-border bg-muted px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
-          style={{ fontFamily: 'var(--font-mono)', colorScheme: 'dark' }}
+          style={{ fontFamily: 'var(--font-mono)', colorScheme: 'light' }}
           title="To date"
         />
 
@@ -94,7 +94,7 @@ export default function FilterBar({
             onClick={clearAll}
             className="px-3 py-2 text-xs text-muted-foreground hover:text-foreground rounded-md hover:bg-muted transition-colors"
           >
-            Clear
+            clear filters
           </button>
         )}
       </div>

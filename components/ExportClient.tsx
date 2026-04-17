@@ -9,17 +9,17 @@ const FORMATS: { value: ExportFormat; label: string; description: string }[] = [
   {
     value: 'bullets',
     label: 'Bullets',
-    description: '• Win — Impact → Evidence',
+    description: 'one line per receipt: what happened and why it mattered',
   },
   {
     value: 'structured',
     label: 'Structured',
-    description: 'What I did / Why it mattered / Evidence per entry',
+    description: 'What I did / Why it mattered / Proof per receipt',
   },
   {
     value: 'timeline',
     label: 'Timeline',
-    description: 'Chronological entries grouped by year',
+    description: 'receipts arranged by date, grouped by year',
   },
 ]
 
@@ -49,7 +49,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `wins-${new Date().toISOString().slice(0, 10)}.txt`
+    a.download = `receipts-${new Date().toISOString().slice(0, 10)}.txt`
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -63,18 +63,16 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
   const selectedEntries = entries.filter(e => selected.has(e.id))
   const previewText = preview ? generateExport(selectedEntries, format) : ''
 
-  const inputClass = "rounded-md border border-border bg-muted px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-[1fr,400px] gap-8" style={{ fontFamily: 'var(--font-body)' }}>
-      {/* Left: entry selection */}
+      {/* Left: receipt selection */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2
-            className="text-lg"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+            className="text-sm uppercase tracking-wide text-muted-foreground"
+            style={{ fontFamily: 'var(--font-mono)' }}
           >
-            Select entries
+            Select receipts
           </h2>
           <button
             onClick={toggleAll}
@@ -86,7 +84,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
 
         {entries.length === 0 ? (
           <p className="text-sm text-muted-foreground py-8 text-center">
-            No wins logged yet.
+            Nothing captured yet.
           </p>
         ) : (
           <div className="space-y-2">
@@ -116,8 +114,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
                     <p
                       className="text-sm font-medium leading-snug truncate"
                       style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '1rem',
+                        fontFamily: 'var(--font-body)',
                         color: isSelected ? 'var(--gold)' : 'var(--foreground)',
                       }}
                     >
@@ -147,8 +144,8 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
         {/* Format picker */}
         <div>
           <h2
-            className="text-lg mb-3"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+            className="text-sm uppercase tracking-wide text-muted-foreground mb-3"
+            style={{ fontFamily: 'var(--font-mono)' }}
           >
             Format
           </h2>
@@ -190,16 +187,16 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
             className="text-xs text-muted-foreground"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
-            {selected.size} of {entries.length} entries selected
+            {selected.size} of {entries.length} receipts selected
           </p>
 
           <button
             onClick={download}
             disabled={selected.size === 0}
-            className="w-full rounded-md px-4 py-3 text-sm font-medium transition-opacity disabled:opacity-40"
-            style={{ background: 'var(--gold)', color: 'oklch(0.12 0.005 60)' }}
+            className="w-full rounded-md px-4 py-3 text-sm font-medium transition-opacity disabled:opacity-40 hover:opacity-90"
+            style={{ background: 'var(--gold)', color: '#0E0E0D' }}
           >
-            Download .txt
+            download as .txt
           </button>
 
           <button
@@ -215,7 +212,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
             disabled={selected.size === 0}
             className="w-full text-xs text-muted-foreground hover:text-foreground transition-colors py-2 disabled:opacity-40"
           >
-            {preview ? 'Hide preview' : 'Preview export'}
+            {preview ? 'hide preview' : 'show preview'}
           </button>
         </div>
 
@@ -229,8 +226,8 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
               Preview
             </p>
             <pre
-              className="rounded-md border border-border p-4 text-xs text-foreground/80 overflow-auto max-h-80 whitespace-pre-wrap leading-relaxed"
-              style={{ background: 'var(--muted)', fontFamily: 'var(--font-mono)' }}
+              className="rounded-md border border-border p-4 text-xs overflow-auto max-h-80 whitespace-pre-wrap leading-relaxed"
+              style={{ background: 'var(--muted)', fontFamily: 'var(--font-mono)', color: 'var(--foreground)' }}
             >
               {previewText}
             </pre>

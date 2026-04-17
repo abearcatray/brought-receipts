@@ -33,13 +33,13 @@ export default async function DashboardPage({
       <div className="flex items-baseline justify-between mb-8">
         <div>
           <h1
-            className="text-4xl text-foreground"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 500 }}
+            className="text-foreground"
+            style={{ fontFamily: 'var(--font-display)', fontSize: '42px', letterSpacing: '2px', lineHeight: 1 }}
           >
-            Your Wins
+            YOUR RECEIPTS
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-body)' }}>
-            {entries.length} {entries.length === 1 ? 'entry' : 'entries'} on record
+          <p className="mt-1.5 text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-mono)' }}>
+            {entries.length} {entries.length === 1 ? 'receipt' : 'receipts'}
           </p>
         </div>
 
@@ -48,12 +48,12 @@ export default async function DashboardPage({
           className="hidden md:flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium transition-opacity hover:opacity-90"
           style={{
             background: 'var(--gold)',
-            color: 'oklch(0.12 0.005 60)',
+            color: '#0E0E0D',
             fontFamily: 'var(--font-body)',
           }}
         >
           <span className="text-base leading-none">+</span>
-          Log a win
+          Capture
         </Link>
       </div>
 
@@ -76,28 +76,26 @@ export default async function DashboardPage({
 
 function EmptyState({ hasFilters }: { hasFilters: boolean }) {
   return (
-    <div
-      className="flex flex-col items-center justify-center py-20 text-center rounded-lg border border-dashed border-border"
-    >
+    <div className="flex flex-col items-center justify-center py-20 text-center rounded-lg border border-dashed border-border">
       <div
-        className="text-5xl mb-4 opacity-30"
-        style={{ fontFamily: 'var(--font-display)' }}
+        className="text-5xl mb-4 opacity-20"
+        style={{ fontFamily: 'var(--font-mono)' }}
       >
         ✦
       </div>
       <p
-        className="text-lg text-muted-foreground"
-        style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic' }}
+        className="text-base text-muted-foreground"
+        style={{ fontFamily: 'var(--font-body)' }}
       >
-        {hasFilters ? 'No wins match your filters.' : 'Your wins log is empty.'}
+        {hasFilters ? 'nothing matches those filters.' : 'Nothing here yet. Go do something worth logging.'}
       </p>
       {!hasFilters && (
         <Link
           href="/dashboard/entries/new"
-          className="mt-5 text-sm underline underline-offset-4 transition-colors hover:text-primary"
+          className="mt-5 text-sm underline underline-offset-4 transition-opacity hover:opacity-70"
           style={{ color: 'var(--gold)', fontFamily: 'var(--font-body)' }}
         >
-          Log your first win →
+          Capture your first receipt →
         </Link>
       )}
     </div>

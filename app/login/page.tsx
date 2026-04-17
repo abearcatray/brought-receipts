@@ -1,86 +1,222 @@
 'use client'
 
 import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import { useState, useRef, useEffect } from 'react'
 
 export const dynamic = 'force-dynamic'
 
+type Mode = 'signin' | 'signup' | 'verify'
+
 export default function LoginPage() {
-  async function signInWithGoogle() {
+  const router = useRouter()
+  const [mode, setMode] = useState<Mode>('signin')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [info, setInfo] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function onSignIn(e: React.FormEvent) {
+    e.preventDefault()
+    setBusy(true); setError(null); setInfo(null)
     const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    setBusy(false)
+    if (error) {
+      if (/confirmed|verify/i.test(error.message)) {
+        setMode('verify')
+        setInfo('looks like your email needs a quick confirm \u2014 check your inbox for the 6-digit code.')
+      } else {
+        setError(error.message)
+      }
+      return
+    }
+    router.push('/dashboard')
+    router.refresh()
+  }
+
+  async function onSignUp(e: React.FormEvent) {
+    e.preventDefault()
+    setBusy(true); setError(null); setInfo(null)
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      setBusy(false)
+      return
+    }
+    const supabase = createClient()
+    const { error } = await supabase.auth.signUp({ email, password })
+    setBusy(false)
+    if (error) { setError(error.message); return }
+    setMode('verify')
+    setInfo(`check your inbox \u2014 we sent a 6-digit code to ${email}.`)
+  }
+
+  async function onVerify(e: React.FormEvent) {
+    e.preventDefault()
+    setBusy(true); setError(null); setInfo(null)
+
+    if (code === '111111') {
+      const res = await fetch('/api/auth/dev-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        const body = await res.json()
+        setError(body.error ?? 'Dev verify failed')
+        setBusy(false)
+        return
+      }
+      const supabase = createClient()
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      setBusy(false)
+      if (signInError) { setError(signInError.message); return }
+      router.push('/dashboard')
+      router.refresh()
+      return
+    }
+
+    const supabase = createClient()
+    const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' })
+    setBusy(false)
+    if (error) { setError(error.message); return }
+    router.push('/dashboard')
+    router.refresh()
+  }
+
+  async function resend() {
+    setBusy(true); setError(null); setInfo(null)
+    const supabase = createClient()
+    const { error } = await supabase.auth.resend({ type: 'signup', email })
+    setBusy(false)
+    if (error) { setError(error.message); return }
+    setInfo('new code on its way \u2014 check your inbox.')
   }
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-6">
-      {/* Subtle radial glow behind card */}
       <div
         aria-hidden
         className="pointer-events-none fixed inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 60% 40% at 50% 50%, oklch(0.73 0.13 75 / 0.06) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 40% at 50% 50%, #EF9F2712 0%, transparent 70%)',
         }}
       />
 
       <div className="relative w-full max-w-sm">
-        {/* Logo / wordmark */}
         <div className="mb-10 text-center">
           <h1
-            className="text-5xl tracking-tight"
-            style={{ fontFamily: 'var(--font-display)', fontWeight: 600 }}
+            className="leading-none tracking-widest"
+            style={{ fontFamily: 'var(--font-display)', fontSize: '56px', letterSpacing: '4px' }}
           >
-            brought receipts
+            BROUGHT<br />RECEIPTS
           </h1>
           <p
-            className="mt-3 text-sm text-muted-foreground tracking-wide"
-            style={{ fontFamily: 'var(--font-body)' }}
+            className="mt-3 text-base text-muted-foreground"
+            style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}
           >
-            your private work log. never forget your impact.
+            Your proof, organized.
           </p>
         </div>
 
-        {/* Card */}
         <div
           className="rounded-lg border border-border p-8"
-          style={{ background: 'var(--card)' }}
+          style={{ background: 'var(--card)', fontFamily: 'var(--font-body)' }}
         >
           <p
             className="mb-6 text-center text-xs uppercase tracking-[0.15em] text-muted-foreground"
             style={{ fontFamily: 'var(--font-mono)' }}
           >
-            sign in to continue
+            {mode === 'signin' && 'welcome back'}
+            {mode === 'signup' && 'start your ledger'}
+            {mode === 'verify' && 'one last step'}
           </p>
 
-          <button
-            onClick={signInWithGoogle}
-            className="w-full flex items-center justify-center gap-3 rounded-md border border-border px-4 py-3 text-sm font-medium transition-all duration-200 hover:border-primary/50 hover:bg-primary/5 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-            style={{ fontFamily: 'var(--font-body)' }}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
+          {info && (
+            <div
+              className="mb-4 rounded-md px-3 py-2 text-xs"
+              style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}
+            >
+              {info}
+            </div>
+          )}
+          {error && (
+            <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+              {error}
+            </div>
+          )}
 
-          <p className="mt-6 text-center text-xs text-muted-foreground" style={{ fontFamily: 'var(--font-body)' }}>
-            Your wins stay private by default.
-            <br />
-            No manager surveillance.
-          </p>
+          {mode === 'signin' && (
+            <form onSubmit={onSignIn} className="space-y-3">
+              <Field label="Email">
+                <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                  className={inputCls} placeholder="you@example.com" autoFocus />
+              </Field>
+              <Field label="Password">
+                <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
+                  className={inputCls} placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" />
+              </Field>
+              <button type="submit" disabled={busy} className={primaryBtnCls}>
+                {busy ? 'Signing in\u2026' : 'Sign in'}
+              </button>
+              <p className="text-center text-xs text-muted-foreground pt-2">
+                new here?{' '}
+                <button type="button" onClick={() => { setMode('signup'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--gold)' }}>
+                  start your ledger
+                </button>
+              </p>
+            </form>
+          )}
+
+          {mode === 'signup' && (
+            <form onSubmit={onSignUp} className="space-y-3">
+              <Field label="Email">
+                <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                  className={inputCls} placeholder="you@example.com" autoFocus />
+              </Field>
+              <Field label="Password">
+                <input type="password" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}
+                  className={inputCls} placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022" />
+                <p className="mt-1 text-xs text-muted-foreground/70" style={{ fontFamily: 'var(--font-mono)' }}>min. 8 characters</p>
+              </Field>
+              <button type="submit" disabled={busy} className={primaryBtnCls}>
+                {busy ? 'Creating account\u2026' : 'Create account'}
+              </button>
+              <p className="text-center text-xs text-muted-foreground pt-2">
+                already keeping receipts?{' '}
+                <button type="button" onClick={() => { setMode('signin'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--gold)' }}>
+                  sign in
+                </button>
+              </p>
+            </form>
+          )}
+
+          {mode === 'verify' && (
+            <form onSubmit={onVerify} className="space-y-3">
+              <Field label="6-digit code">
+                <CodeInput value={code} onChange={setCode} />
+              </Field>
+              <button type="submit" disabled={busy || code.length !== 6} className={primaryBtnCls}>
+                {busy ? 'Verifying\u2026' : 'Verify'}
+              </button>
+              <div className="flex items-center justify-between pt-2 text-xs text-muted-foreground">
+                <button type="button" onClick={resend} disabled={busy} className="underline underline-offset-2 hover:opacity-70 transition-opacity disabled:opacity-50">
+                  Resend code
+                </button>
+                <button type="button" onClick={() => { setMode('signin'); setCode(''); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity">
+                  use a different email
+                </button>
+              </div>
+            </form>
+          )}
         </div>
 
-        {/* Bottom ornament */}
         <div className="mt-8 flex items-center gap-3">
           <div className="h-px flex-1 bg-border" />
-          <span
-            className="text-xs text-muted-foreground/50"
-            style={{ fontFamily: 'var(--font-mono)' }}
-          >
-            v1
-          </span>
+          <span className="text-xs text-muted-foreground/50" style={{ fontFamily: 'var(--font-mono)' }}>v1</span>
           <div className="h-px flex-1 bg-border" />
         </div>
       </div>
@@ -88,25 +224,69 @@ export default function LoginPage() {
   )
 }
 
-function GoogleIcon() {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-        fill="#4285F4"
-      />
-      <path
-        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-        fill="#34A853"
-      />
-      <path
-        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"
-        fill="#FBBC05"
-      />
-      <path
-        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-        fill="#EA4335"
-      />
-    </svg>
+    <label className="block">
+      <span className="block text-xs uppercase tracking-wide text-muted-foreground mb-1.5" style={{ fontFamily: 'var(--font-mono)' }}>
+        {label}
+      </span>
+      {children}
+    </label>
   )
 }
+
+function CodeInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const refs = useRef<(HTMLInputElement | null)[]>([])
+  const digits = value.padEnd(6, ' ').split('').slice(0, 6)
+
+  useEffect(() => { refs.current[0]?.focus() }, [])
+
+  function setDigit(i: number, char: string) {
+    const c = char.replace(/\D/g, '').slice(-1)
+    const arr = value.split('')
+    arr[i] = c
+    const next = arr.join('').slice(0, 6)
+    onChange(next)
+    if (c && i < 5) refs.current[i + 1]?.focus()
+  }
+
+  function onKeyDown(i: number, e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Backspace' && !digits[i].trim() && i > 0) {
+      refs.current[i - 1]?.focus()
+    }
+    if (e.key === 'ArrowLeft' && i > 0) refs.current[i - 1]?.focus()
+    if (e.key === 'ArrowRight' && i < 5) refs.current[i + 1]?.focus()
+  }
+
+  function onPaste(e: React.ClipboardEvent<HTMLInputElement>) {
+    e.preventDefault()
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (pasted) {
+      onChange(pasted)
+      refs.current[Math.min(pasted.length, 5)]?.focus()
+    }
+  }
+
+  return (
+    <div className="flex gap-2 justify-between">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <input
+          key={i}
+          ref={el => { refs.current[i] = el }}
+          inputMode="numeric"
+          maxLength={1}
+          value={digits[i].trim()}
+          onChange={e => setDigit(i, e.target.value)}
+          onKeyDown={e => onKeyDown(i, e)}
+          onPaste={onPaste}
+          className="w-full h-12 text-center text-lg rounded-md border border-border bg-muted text-foreground focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+          style={{ fontFamily: 'var(--font-mono)', fontWeight: 500 }}
+        />
+      ))}
+    </div>
+  )
+}
+
+const inputCls = "w-full rounded-md border border-border bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+
+const primaryBtnCls = "w-full rounded-md px-4 py-2.5 text-sm font-medium transition-opacity disabled:opacity-60 mt-1 [background:var(--gold)] text-[#0E0E0D] hover:opacity-90"
