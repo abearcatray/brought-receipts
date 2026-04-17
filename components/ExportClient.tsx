@@ -115,7 +115,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
                       className="text-sm font-medium leading-snug truncate"
                       style={{
                         fontFamily: 'var(--font-body)',
-                        color: isSelected ? 'var(--gold)' : 'var(--foreground)',
+                        color: isSelected ? 'var(--primary)' : 'var(--foreground)',
                       }}
                     >
                       {entry.title}
@@ -170,7 +170,7 @@ export default function ExportClient({ entries }: { entries: Entry[] }) {
                 <div>
                   <p
                     className="text-sm font-medium"
-                    style={{ color: format === f.value ? 'var(--gold)' : 'var(--foreground)' }}
+                    style={{ color: format === f.value ? 'var(--primary)' : 'var(--foreground)' }}
                   >
                     {f.label}
                   </p>

@@ -337,7 +337,7 @@ export default function EntryForm({
             <span
               key={i}
               className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-sm max-w-[260px]"
-              style={{ background: 'var(--gold-dim)', color: 'var(--gold)', fontFamily: 'var(--font-body)' }}
+              style={{ background: 'var(--gold-dim)', color: 'var(--primary)', fontFamily: 'var(--font-body)' }}
             >
               <span className="truncate">{link}</span>
               <button

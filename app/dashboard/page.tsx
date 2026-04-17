@@ -93,7 +93,7 @@ function EmptyState({ hasFilters }: { hasFilters: boolean }) {
         <Link
           href="/dashboard/entries/new"
           className="mt-5 text-sm underline underline-offset-4 transition-opacity hover:opacity-70"
-          style={{ color: 'var(--gold)', fontFamily: 'var(--font-body)' }}
+          style={{ color: 'var(--primary)', fontFamily: 'var(--font-body)' }}
         >
           Capture your first receipt →
         </Link>

@@ -38,7 +38,7 @@ export default function TagInput({
         <span
           key={tag}
           className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-sm"
-          style={{ background: 'var(--gold-dim)', color: 'var(--gold)', fontFamily: 'var(--font-body)' }}
+          style={{ background: 'var(--gold-dim)', color: 'var(--primary)', fontFamily: 'var(--font-body)' }}
         >
           {tag}
           <button
@@ -58,7 +58,7 @@ export default function TagInput({
         onKeyDown={onKey}
         onBlur={() => input && addTag(input)}
         placeholder={value.length === 0 ? 'Type a tag, press Enter…' : ''}
-        className="flex-1 min-w-24 bg-transparent text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
+        className="flex-1 min-w-24 bg-transparent text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none"
         style={{ fontFamily: 'var(--font-body)' }}
       />
     </div>

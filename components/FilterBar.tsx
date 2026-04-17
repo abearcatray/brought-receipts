@@ -112,7 +112,7 @@ export default function FilterBar({
                 style={{
                   border: active ? '1px solid var(--gold)' : '1px solid var(--border)',
                   background: active ? 'var(--gold-dim)' : 'transparent',
-                  color: active ? 'var(--gold)' : 'var(--muted-foreground)',
+                  color: active ? 'var(--primary)' : 'var(--muted-foreground)',
                 }}
               >
                 {tag}

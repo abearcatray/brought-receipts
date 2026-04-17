@@ -61,7 +61,7 @@ export default async function EntryDetailPage({
             {entry.project && (
               <span
                 className="text-xs px-2.5 py-1 rounded-sm"
-                style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}
+                style={{ background: 'var(--gold-dim)', color: 'var(--primary)' }}
               >
                 {entry.project}
               </span>
@@ -118,7 +118,7 @@ export default async function EntryDetailPage({
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 text-sm hover:opacity-70 transition-opacity group"
-                    style={{ color: 'var(--gold)' }}
+                    style={{ color: 'var(--primary)' }}
                   >
                     <span className="text-muted-foreground group-hover:text-primary">↗</span>
                     {link.label || link.url}

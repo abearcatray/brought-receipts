@@ -12,7 +12,7 @@ export default function NewEntryPage() {
         >
           CAPTURE
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>
+        <p className="mt-2 text-sm text-muted-foreground" style={{ fontFamily: 'var(--font-body)' }}>
           Log it while it&apos;s fresh.
         </p>
       </div>

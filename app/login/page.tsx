@@ -138,7 +138,7 @@ export default function LoginPage() {
           {info && (
             <div
               className="mb-4 rounded-md px-3 py-2 text-xs"
-              style={{ background: 'var(--gold-dim)', color: 'var(--gold)' }}
+              style={{ background: 'var(--gold-dim)', color: 'var(--primary)' }}
             >
               {info}
             </div>
@@ -164,7 +164,7 @@ export default function LoginPage() {
               </button>
               <p className="text-center text-xs text-muted-foreground pt-2">
                 new here?{' '}
-                <button type="button" onClick={() => { setMode('signup'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--gold)' }}>
+                <button type="button" onClick={() => { setMode('signup'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--primary)' }}>
                   start your ledger
                 </button>
               </p>
@@ -187,7 +187,7 @@ export default function LoginPage() {
               </button>
               <p className="text-center text-xs text-muted-foreground pt-2">
                 already keeping receipts?{' '}
-                <button type="button" onClick={() => { setMode('signin'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--gold)' }}>
+                <button type="button" onClick={() => { setMode('signin'); setError(null); setInfo(null) }} className="underline underline-offset-2 hover:opacity-70 transition-opacity" style={{ color: 'var(--primary)' }}>
                   sign in
                 </button>
               </p>
@@ -287,6 +287,6 @@ function CodeInput({ value, onChange }: { value: string; onChange: (v: string) =
   )
 }
 
-const inputCls = "w-full rounded-md border border-border bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
+const inputCls = "w-full rounded-md border border-border bg-muted px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
 
 const primaryBtnCls = "w-full rounded-md px-4 py-2.5 text-sm font-medium transition-opacity disabled:opacity-60 mt-1 [background:var(--gold)] text-[#0E0E0D] hover:opacity-90"

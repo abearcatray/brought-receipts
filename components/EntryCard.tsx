@@ -68,7 +68,7 @@ export default function EntryCard({
                   className="text-xs px-2 py-0.5 rounded-sm"
                   style={{
                     background: 'var(--gold-dim)',
-                    color: 'var(--gold)',
+                    color: 'var(--primary)',
                     fontFamily: 'var(--font-body)',
                   }}
                 >
